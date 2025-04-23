@@ -10,9 +10,9 @@ public interface BookService {
 
     List<Book> findAllBooks();
 
-    Book saveBook(Book book);
+    void saveBook(Book book);
 
-    Book findByName(String name);
+    Book findByTitle(String title);
 
     Book findByISBN(Long ISBN);
 

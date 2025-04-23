@@ -2,11 +2,8 @@ package com.example.BookProject.Service;
 
 import com.example.BookProject.Model.Book;
 import com.example.BookProject.Repository.BookRepository;
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -30,13 +27,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
+    public void saveBook(Book book) {
+        bookRepository.save(book);
     }
 
     @Override
-    public Book findByName(String name) {
-        return bookRepository.findByName(name).orElseThrow(EntityNotFoundException::new);
+    public Book findByTitle(String title) {
+        return bookRepository.findByTitle(title).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

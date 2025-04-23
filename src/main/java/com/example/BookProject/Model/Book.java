@@ -1,37 +1,40 @@
 package com.example.BookProject.Model;
 
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Builder;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@NoArgsConstructor
+
 @Setter
 @Getter
-
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Entity
-@Table(name = "Books")
+@Table(name = "books")
+
+
 public class Book {
     @Id
-    Long ISBN;
+    private  Long ISBN;
+
     @Column(nullable = false)
-    String name;
+    @NotBlank(message = "book title is mandatory")
+     private String title;
 
-    String author;
+    @Column(nullable = false)
+    @NotBlank( message = "book should not be anonymous")
+    private String author;
 
-    int pages;
-
-    public Book(String author, Long ISBN, String name, int pages) {
-        this.author = author;
-        this.ISBN = ISBN;
-        this.name = name;
-        this.pages = pages;
-    }
+    @Min(value = 1, message = "Page count must be at least 1")
+    private int pages;
 }
