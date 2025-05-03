@@ -1,12 +1,13 @@
 package com.example.BookProject.Service;
 
 import com.example.BookProject.Model.Book;
+import com.example.BookProject.Model.BookTopic;
+import com.example.BookProject.Model.ReaderLevel;
 import com.example.BookProject.Repository.BookRepository;
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import org.antlr.v4.runtime.misc.NotNull;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,10 +20,7 @@ import java.util.List;
 
 public class BookServiceImpl implements BookService {
 
-
-    private  final BookRepository bookRepository; // DI via @AllArgsConstructor
-
-
+    private final BookRepository bookRepository; // DI via @AllArgsConstructor
 
     @Override
     public List<Book> findAllBooks() {
@@ -30,27 +28,48 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
+    public List<Book> findBooksByLevel(ReaderLevel readerLevel) {
+        return bookRepository.findBooksByReaderLevel(readerLevel);
     }
 
     @Override
-    public Book findByName(String name) {
-        return bookRepository.findByName(name).orElseThrow(EntityNotFoundException::new);
+    public List<Book> findBooksByBookTopic(String topic) {
+        return bookRepository.findBooksByBookTopic(topic);
     }
 
     @Override
-    public Book findByISBN(Long ISBN) {
-        return bookRepository.findByISBN(ISBN).orElseThrow(EntityNotFoundException::new);
+    public void saveBook(Book book) {
+
+        if (book.getBookTopicList() != null) {
+            for (BookTopic topic : book.getBookTopicList()) {
+                topic.setBook(book);
+            }
+        }
+        bookRepository.save(book);
+    }
+
+        @Override
+        public Book findByTitle(String title){
+            return bookRepository.findByTitle(title).orElseThrow(EntityNotFoundException::new);
+        }
+
+    @Override
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public Book updateBook(Book book) {
-        return bookRepository.save(book);
-    }
+        public Book findById(Long id){
+            return bookRepository.findById(id).orElseThrow(EntityNotFoundException::new); // Заменить на orElse без пробрасывания исклчений
+        }
 
-    @Override
-    public void deleteBook(Long ISBN) {
-        bookRepository.deleteById(ISBN);
+        @Override
+        public Book updateBook(Book book){
+            return bookRepository.save(book);
+        }
+
+        @Override
+        public void deleteBook (Long id){
+            bookRepository.deleteById(id);
+        }
     }
-}

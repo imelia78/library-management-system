@@ -1,6 +1,7 @@
 package com.example.BookProject.Service;
 
 import com.example.BookProject.Model.Book;
+import com.example.BookProject.Model.ReaderLevel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,13 +11,21 @@ public interface BookService {
 
     List<Book> findAllBooks();
 
-    Book saveBook(Book book);
+    List<Book> findBooksByLevel(ReaderLevel readerLevel);
 
-    Book findByName(String name);
+    List<Book> findBooksByBookTopic(String topic);
 
-    Book findByISBN(Long ISBN);
+    void saveBook(Book book);
+
+    Book findByTitle(String title);
+
+    Book findByIsbn(String isbn);
+
+    Book findById(Long  id);
 
     Book updateBook(Book book);
 
-    void deleteBook(Long ISBN);
+    void deleteBook(Long id);
+
+
 }
