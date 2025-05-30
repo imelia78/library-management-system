@@ -2,12 +2,15 @@ package com.example.BookProject.Service;
 
 import com.example.BookProject.Model.Book;
 import com.example.BookProject.Model.BookTopic;
+import com.example.BookProject.Model.MyUser;
 import com.example.BookProject.Model.ReaderLevel;
 import com.example.BookProject.Repository.BookRepository;
+import com.example.BookProject.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -20,7 +23,9 @@ import java.util.List;
 
 public class BookServiceImpl implements BookService {
 
-    private final BookRepository bookRepository; // DI via @AllArgsConstructor
+    private final BookRepository bookRepository;// DI via @AllArgsConstructor
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // hiding password
 
     @Override
     public List<Book> findAllBooks() {
@@ -72,4 +77,10 @@ public class BookServiceImpl implements BookService {
         public void deleteBook (Long id){
             bookRepository.deleteById(id);
         }
+
+    @Override
+    public void saveUser(MyUser user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
+}
