@@ -19,6 +19,11 @@ A RESTful web service for managing a book library. This application allows users
 - ✅ Profile support:
   - **`dev`** → uses in-memory H2 database
   - **`prod`** → uses PostgreSQL
+- ✅ Languages support:
+  - **'en'**
+  - **'ru'**
+  - **'ge'**
+
 
 ---
 
@@ -48,5 +53,5 @@ A RESTful web service for managing a book library. This application allows users
 ### Clone the Repository
 
 ```bash
-git clonehttps://github.com/imelia78/library-management-system.git
+git clone https://github.com/imelia78/library-management-system.git
 cd library-management-system
