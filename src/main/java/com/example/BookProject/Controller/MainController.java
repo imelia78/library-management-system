@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +51,7 @@ public class MainController {
     public ResponseEntity<Book> giveBookById(@PathVariable Long id) { //
         Book book = bookService.findById(id);
         if (book == null) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
         return ResponseEntity.ok(book);
 
@@ -78,7 +79,7 @@ public class MainController {
     public ResponseEntity<Book> giveBookByTitle(@PathVariable @NotBlank String title) {
         Book book = bookService.findByTitle(title);
         if (book == null) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
         return ResponseEntity.ok(book);
     }
@@ -93,10 +94,13 @@ public class MainController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save_book")
-    public ResponseEntity<String> addBook(@Valid @RequestBody Book book, Locale locale) { //Сериализация запроса в JSON
+    public ResponseEntity<String> saveBook(@Valid @RequestBody Book book, Locale locale) { //Сериализация запроса в JSON
         bookService.saveBook(book);
+        if (book.getId() != null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "you don't have to enter id");
+        }
         String localizedMessage = messageSource.getMessage("book.saved", new Object[]{book.getTitle()}, locale);
-        return ResponseEntity.ok(localizedMessage);
+        return ResponseEntity.ok(localizedMessage);  //  add HTTPstatus -> CREATED
     }
 
 
