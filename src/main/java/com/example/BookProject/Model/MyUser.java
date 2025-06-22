@@ -12,7 +12,6 @@ import lombok.*;
 @Table(name = "users")
 
 
-
 public class MyUser {
 
     @Id

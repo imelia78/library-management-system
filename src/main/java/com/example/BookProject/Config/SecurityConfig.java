@@ -30,28 +30,28 @@ public class SecurityConfig {
         return new MyUserDetailsService();
     }
 
-        @Bean
-        public PasswordEncoder passwordEncoder () {
-            return new BCryptPasswordEncoder();
-        }
-
-        @Bean
-        public AuthenticationProvider authenticationProvider () {
-            DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-            authProvider.setUserDetailsService(userDetailsService());
-            authProvider.setPasswordEncoder(passwordEncoder());
-            return authProvider;
-        }
-
-        @Bean
-        public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-            return http
-                    .csrf(AbstractHttpConfigurer::disable) // handling by security 4
-                    .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/books", "/api/v1/books/new_user").permitAll()
-                            .requestMatchers("/api/v1/books/**").authenticated())
-                    .httpBasic(Customizer.withDefaults()) // добавь Basic Auth
-                    //.formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-                    .build();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable) // handling by security 4
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/books", "/api/v1/books/new_user").permitAll()
+                        .requestMatchers("/actuator/**", "/api/v1/books/**").authenticated())
+                .httpBasic(Customizer.withDefaults()) // добавь Basic Auth
+                //.formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .build();
+    }
+}
 

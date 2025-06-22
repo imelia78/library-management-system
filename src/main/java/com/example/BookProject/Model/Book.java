@@ -34,13 +34,23 @@ public class Book {
 
     @NotBlank
     @Column(nullable = false)
-    @Size(min = 10 , max = 13)
+    @Size(min = 10, max = 13)
     private String isbn;
+
+
+    @Positive
+    @Column(nullable = false)
+    private Integer totalCopies;
+
+    @Positive
+    @Column(nullable = false)
+    private Integer availableCopies;
+
 
     @Enumerated(EnumType.STRING)
     @NotNull
     @Column(nullable = false)
-    private  ReaderLevel readerLevel;
+    private ReaderLevel readerLevel;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -49,12 +59,11 @@ public class Book {
 
     @Column(nullable = false)
     @NotNull(message = "book title is mandatory")
-     private String title;
-
+    private String title;
 
 
     @Min(value = 1, message = "Page count must be at least 1")
-    private int pages;
+    private Integer pages;
 
 
     @ManyToMany(cascade = CascadeType.ALL)

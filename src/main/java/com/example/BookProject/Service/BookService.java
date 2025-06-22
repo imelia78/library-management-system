@@ -1,31 +1,30 @@
 package com.example.BookProject.Service;
 
-import com.example.BookProject.Model.Book;
+import com.example.BookProject.DTO.BookDTO;
 import com.example.BookProject.Model.MyUser;
 import com.example.BookProject.Model.ReaderLevel;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 public interface BookService {
 
 
-    List<Book> findAllBooks();
+    List<BookDTO> findAllBooks();
 
-    List<Book> findBooksByLevel(ReaderLevel readerLevel);
+    List<BookDTO> findBooksByLevel(ReaderLevel readerLevel);
 
-    List<Book> findBooksByBookTopic(String topic);
+    List<BookDTO> findBooksByBookTopic(String topic);
 
-    void saveBook(Book book);
+    BookDTO saveBook(BookDTO bookDTO);
 
-    Book findByTitle(String title);
+    BookDTO findByTitle(String title);
 
-    Book findByIsbn(String isbn);
+    BookDTO findByIsbn(String isbn);
 
-    Book findById(Long  id);
+    BookDTO findById(Long id);
 
-    Book updateBook(Book book);
+    BookDTO updateBook(BookDTO bookDTO);
 
     void deleteBook(Long id);
 

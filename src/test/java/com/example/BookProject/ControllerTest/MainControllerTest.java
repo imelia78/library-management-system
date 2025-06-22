@@ -1,7 +1,6 @@
 package com.example.BookProject.ControllerTest;
-import com.example.BookProject.Controller.MainController;
-import com.example.BookProject.Model.Book;
-import com.example.BookProject.Model.BookTopic;
+
+import com.example.BookProject.DTO.BookDTO;
 import com.example.BookProject.Model.ReaderLevel;
 import com.example.BookProject.Service.BookService;
 import com.example.BookProject.Service.MyUserDetailsService;
@@ -9,12 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
-@WebMvcTest(MainController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class MainControllerTest {
 
     @MockitoBean
@@ -49,7 +50,6 @@ class MainControllerTest {
     private MockMvc mockMvc;
 
 
-
     @Test
     @WithMockUser
     void getBooks() throws Exception {
@@ -59,17 +59,9 @@ class MainControllerTest {
     @Test
     @WithMockUser
     void getBookById() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
-
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
         Mockito.when(bookService.findById(1L)).thenReturn(mockBook);
-
         mockMvc.perform(get("/api/v1/books/by-id/1")).andExpect(status().isOk());
 
     }
@@ -78,14 +70,8 @@ class MainControllerTest {
     @Test
     @WithMockUser
     void getBookByLevel() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
 
         Mockito.when(bookService.findBooksByLevel(ReaderLevel.ADVANCED)).thenReturn(Collections.singletonList(mockBook));
 
@@ -96,14 +82,8 @@ class MainControllerTest {
     @Test
     @WithMockUser
     void getBookByIsbn() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
 
         Mockito.when(bookService.findByIsbn("1234567890")).thenReturn(mockBook);
 
@@ -114,14 +94,8 @@ class MainControllerTest {
     @Test
     @WithMockUser
     void getBookByTitle() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
 
         Mockito.when(bookService.findByTitle("Book Title")).thenReturn(mockBook);
 
@@ -132,58 +106,37 @@ class MainControllerTest {
     @Test
     @WithMockUser
     void getBookByBookTopic() throws Exception {
-        Book mockBook = new Book();
-        BookTopic bookTopic = new BookTopic();
-        bookTopic.setId(1L);
-        bookTopic.setBook(mockBook);
-        bookTopic.setTopic("Algorithms");
 
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(List.of(bookTopic));
-        mockBook.setAuthorSet(Collections.emptySet());
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, List.of("Algorithms"), Collections.emptySet());
 
-        Mockito.when(bookService.findBooksByBookTopic(bookTopic.getTopic())).thenReturn(Collections.singletonList(mockBook));
+
+        Mockito.when(bookService.findBooksByBookTopic("Algorithms")).thenReturn(Collections.singletonList(mockBook));
 
         mockMvc.perform(get("/api/v1/books/by-topic/Algorithms")).andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser( username = "admin" ,roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+        //ЧТо то не то!
     void saveBook() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100, 5, 3,
+                ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
 
         String bookJson = objectMapper.writeValueAsString(mockBook);
 
         mockMvc.perform(post("/api/v1/books/save_book").with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                .content(bookJson).locale(Locale.ENGLISH))
-                .andExpect(status().isOk());
-        verify(bookService, times(1)).saveBook(any(Book.class));
+                        .content(bookJson).locale(Locale.ENGLISH))
+                .andExpect(status().isCreated());
+        verify(bookService, times(1)).saveBook(any(BookDTO.class));
     }
 
 
     @Test
-    @WithMockUser(username = "admin" ,roles = {"ADMIN"})
-    void  updateBook() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setId(1L);
-        mockBook.setIsbn("1234567890");
-        mockBook.setReaderLevel(ReaderLevel.ADVANCED);
-        mockBook.setTitle("Book Title");
-        mockBook.setPages(100);
-        mockBook.setBookTopicList(Collections.emptyList());
-        mockBook.setAuthorSet(Collections.emptySet());
-
-        String bookJson = objectMapper.writeValueAsString(mockBook);
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void updateBook() throws Exception {
+        BookDTO mockBook = new BookDTO(1L, "Book Title", "1234567890", 100,
+                5, 3, ReaderLevel.ADVANCED, Collections.emptyList(), Collections.emptySet());
 
         Mockito.when(bookService.updateBook(mockBook)).thenReturn(mockBook);
 
@@ -194,15 +147,15 @@ class MainControllerTest {
 
 
     @Test
-    @WithMockUser(username = "admin" ,roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteBook_successfully() throws Exception {
         var bookId = 1L;
-        Book mockBook = new Book();
-        mockBook.setId(bookId);
-
+        BookDTO mockBook = new BookDTO(1L, "Book Title",
+                "1234567890", 100, 5, 3, ReaderLevel.ADVANCED,
+                Collections.emptyList(), Collections.emptySet());
 
         Mockito.when(bookService.findById(1L)).thenReturn(mockBook);
-        Mockito.when(messageSource.getMessage(eq("book.deleted"),any(),any())).thenReturn("Book deleted: 1");
+        Mockito.when(messageSource.getMessage(eq("book.deleted"), any(), any())).thenReturn("Book deleted: 1");
 
 
         mockMvc.perform(delete("/api/v1/books/delete_book/{id}", bookId).with(csrf()).locale(Locale.ENGLISH))
@@ -215,19 +168,19 @@ class MainControllerTest {
 
 
     @Test
-    @WithMockUser(username = "admin" ,roles = {"ADMIN"})
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void deleteBook_fail() throws Exception {
         var bookId = 1222L;
 
         Mockito.when(bookService.findById(bookId)).thenReturn(null);
-        Mockito.when(messageSource.getMessage(eq("book.unfound"),any(),any())).thenReturn("Book not found: 1222");
+        Mockito.when(messageSource.getMessage(eq("book.unfound"), any(), any())).thenReturn("Book not found: 1222");
 
         mockMvc.perform(delete("/api/v1/books/delete_book/{id}", bookId).with(csrf()).locale(Locale.ENGLISH))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString("Book not found")));
 
         verify(bookService, times(1)).findById(bookId);
-        verify(bookService,never()).deleteBook(any());
+        verify(bookService, never()).deleteBook(any());
 
     }
 
