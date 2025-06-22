@@ -22,7 +22,7 @@ A RESTful web service for managing a book library. This application allows users
   - `prod`: PostgreSQL
 - 🧩 DTO-based architecture and entity mappers
 - ✅ Logging for important events and errors
-=======
+
 
 
 ---
