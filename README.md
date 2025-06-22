@@ -13,6 +13,7 @@ A RESTful web service for managing a book library. This application allows users
   - Title
   - Topic (e.g., Java, Operating Systems, Networking)
   - Reader Level (Beginner, Intermediate, Advanced)
+
 - ✅ Input validation with annotations like `@Valid`, `@NotBlank`, `@Size`, `@Positive`
 - ⚠️ Exception handling with meaningful HTTP responses
 - 🧪 Unit and integration testing with MockMvc and H2
@@ -21,6 +22,8 @@ A RESTful web service for managing a book library. This application allows users
   - `prod`: PostgreSQL
 - 🧩 DTO-based architecture and entity mappers
 - ✅ Logging for important events and errors
+=======
+
 
 ---
 
@@ -58,5 +61,5 @@ A RESTful web service for managing a book library. This application allows users
 ### Clone the Repository
 
 ```bash
-git clonehttps://github.com/imelia78/library-management-system.git
+git clone https://github.com/imelia78/library-management-system.git
 cd library-management-system
